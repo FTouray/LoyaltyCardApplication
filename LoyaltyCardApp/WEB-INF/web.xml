@@ -18,7 +18,15 @@
 		<url-pattern>/registerLoyaltyCard</url-pattern>
 	</servlet-mapping>
 
-	
+	<servlet>
+		<servlet-name>UserLoginServlet</servlet-name>
+		<servlet-class>UserLoginServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>UserLoginServlet</servlet-name>
+		<url-pattern>/checkLoginInfo</url-pattern>
+	</servlet-mapping>
  
 
 </web-app>
