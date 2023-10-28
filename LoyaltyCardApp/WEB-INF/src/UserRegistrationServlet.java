@@ -1,11 +1,11 @@
 import java.io.IOException;
-import java.io.PrintWriter;
+//import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+//import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+//import java.sql.Statement;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -31,14 +31,30 @@ public class UserRegistrationServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        // Check that the user has entered the password correctly twice
-        try {
-            String username = request.getParameter("username");
+        String username = request.getParameter("username");
             String password = request.getParameter("password");
             String confirmPassword = request.getParameter("confirmPassword");
+
+
+    
+
+        response.setContentType("text/html");
+        //PrintWriter out = response.getWriter();
+
+        // Check that the user has unique username and entered the password correctly twice
+        try {
             int regPoints = 100;
 
-            if (password.equals(confirmPassword)) 
+           /** PreparedStatement checkUsername = connection.prepareStatement(
+                "SELECT username FROM users WHERE username = ?");
+            checkUsername.setString(1, username);
+            ResultSet rs = checkUsername.executeQuery();
+            //Validate that the username is not taken
+            if(rs.next()){
+                out.println("Username is already taken.");
+                //response.sendRedirect("usernameTaken.html");
+            }
+            else*/ if (password.equals(confirmPassword)) 
             {// Insert into users       
                 PreparedStatement createUser = connection.prepareStatement(
                         "INSERT into users "
@@ -50,11 +66,13 @@ public class UserRegistrationServlet extends HttpServlet {
                 int rowsUpdated = createUser.executeUpdate();
                 createUser.close();
 
-               
+                if (rowsUpdated > 0){               
                     // Registration is successful
                     response.sendRedirect("UserLogin.html");
+                }
                 
-            } else
+            } 
+            else if (!password.equals(confirmPassword)) 
             {// If the password doesn't match
                 response.sendRedirect("registerError.html");
             }
