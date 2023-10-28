@@ -57,7 +57,7 @@ public class UserLoginServlet extends HttpServlet{
 					boolean isUser = false;
 						while(rs.next()) {
 							try {
-								if(rs.getString(1).equalsIgnoreCase(username)&&rs.getString(2).equalsIgnoreCase(password)) {	
+								if(rs.getString(1).equalsIgnoreCase(username)&&rs.getString(2).equals(password)) {	
 									isUser = true;
 									break;
 								}								
