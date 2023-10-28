@@ -9,22 +9,22 @@
 
   
   <servlet>
-		<servlet-name>UserRegistrationServlet</servlet-name>
+		<servlet-name>UserRegistration</servlet-name>
 		<servlet-class>UserRegistrationServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>UserRegistrationServlet</servlet-name>
+		<servlet-name>UserRegistration</servlet-name>
 		<url-pattern>/registerLoyaltyCard</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>UserLoginServlet</servlet-name>
+		<servlet-name>UserLogin</servlet-name>
 		<servlet-class>UserLoginServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>UserLoginServlet</servlet-name>
+		<servlet-name>UserLogin</servlet-name>
 		<url-pattern>/checkLoginInfo</url-pattern>
 	</servlet-mapping>
  

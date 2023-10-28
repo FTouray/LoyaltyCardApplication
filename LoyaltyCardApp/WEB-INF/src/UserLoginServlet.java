@@ -2,7 +2,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+//import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -72,7 +72,7 @@ public class UserLoginServlet extends HttpServlet{
 							out.println("");
 						}
 						else {//If not, send response to the user saying login info not correct
-							out.println("");
+							out.println("Login information is incorrect.");
 						}
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
