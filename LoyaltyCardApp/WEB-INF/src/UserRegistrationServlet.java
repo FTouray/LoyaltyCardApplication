@@ -12,56 +12,56 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class UserRegistrationServlet extends HttpServlet{
-	
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws 
-	ServletException, IOException{
-		
-		Connection connection = null;
-		try {
+public class UserRegistrationServlet extends HttpServlet {
+
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        Connection connection = null;
+        try {
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
             } catch (ClassNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            }           connection = DriverManager.getConnection(
+            }
+            connection = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/loyaltyapp?serverTimezone=UTC", "root", "root");
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        //Check that the user has entered the password correctly twice
+        // Check that the user has entered the password correctly twice
         try {
-			if(request.getParameter("password").equals(request.getParameter("Confirmpassword")))
-			{//Insert into users table is the database
-                String username = request.getParameter("username");
-                String email = request.getParameter("email");
-                int regPoints = 100;
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+            String confirmPassword = request.getParameter("confirmPassword");
+            int regPoints = 100;
 
-			PreparedStatement createUser = connection.prepareStatement(
-					"INSERT into users "
-					+ "(username, password, points)" +" VALUES (?, ?, ?)");
-					//Pass in the values as parameters
-				    createUser.setString(1, username);
-				    createUser.setString(2,  email);
-                    createUser.setInt(2,  regPoints);//When a user registers that automatically get 100 points					
-					int rowsUpdated = createUser.executeUpdate();
-					createUser.close();
+            if (password.equals(confirmPassword)) 
+            {// Insert into users       
+                PreparedStatement createUser = connection.prepareStatement(
+                        "INSERT into users "
+                                + "(username, password, points)" + " VALUES (?, ?, ?)");
+                // Pass in the values as parameters
+                createUser.setString(1, username);
+                createUser.setString(2, password);
+                createUser.setInt(3, regPoints);// When a user registers that automatically get 100 points
+                int rowsUpdated = createUser.executeUpdate();
+                createUser.close();
 
-                    if (rowsUpdated > 0) {
-                        //Registration is successful
-                        response.sendRedirect("UserLogin.html");
-                    }
-			}
-            else {//If the password doesn't match
+               
+                    // Registration is successful
+                    response.sendRedirect("UserLogin.html");
+                
+            } else
+            {// If the password doesn't match
                 response.sendRedirect("registerError.html");
             }
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-		
-					
-	} 
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+
+    }
 
 }
