@@ -28,5 +28,14 @@
 		<url-pattern>/checkLoginInfo</url-pattern>
 	</servlet-mapping>
  
+	<servlet>
+		<servlet-name>LoyaltyCardPoints</servlet-name>
+		<servlet-class>LoyaltyCardPointsServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>LoyaltyCardPoints</servlet-name>
+		<url-pattern>/PointsManagementServlet</url-pattern>
+	</servlet-mapping>
 
 </web-app>
