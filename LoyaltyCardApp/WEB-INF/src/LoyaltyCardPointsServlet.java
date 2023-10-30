@@ -49,11 +49,7 @@ public class LoyaltyCardPointsServlet extends HttpServlet {
                 currentPoints = rs.getInt("points");
             }
 
-           //TO FIX
-/**Not getting points from database
- * Not updating database points
- * Not getting user from databse
- */
+  
                 String action = request.getParameter("action");
                 if (action != null) {
 
@@ -71,12 +67,14 @@ public class LoyaltyCardPointsServlet extends HttpServlet {
                         if (receiptNumber != null && !receiptNumber.isEmpty()) {
                             Random random = new Random();
                             int pointsToAdd = random.nextInt(20, 100);
-                            updatePointsInDatabase(connection, username, currentPoints);
-                            currentPoints += pointsToAdd;
+                            int newPoints = currentPoints + pointsToAdd;
+                            updatePointsInDatabase(connection, username, newPoints);
+                            
                             out.println("<html><body>");
                             out.println("Welcome, " + username + "!");
                             out.println("<p>Your current loyalty points: " + currentPoints + "</p>");
-                            out.println("Points added successfully.");
+                            out.println(pointsToAdd + " Points added successfully from receipt.");
+                            out.println("<p>Total Points now: " + newPoints + "</p>");
                             out.println("</body></html>");
 
                         } else {
@@ -88,12 +86,13 @@ public class LoyaltyCardPointsServlet extends HttpServlet {
 
                         int pointsToSpend = Integer.parseInt(request.getParameter("pointsToSpend"));
                         if (currentPoints - pointsToSpend >= 0) {
-                            currentPoints -= pointsToSpend;
-                            updatePointsInDatabase(connection, username, currentPoints);
+                             int newPoints = currentPoints - pointsToSpend;
+                            updatePointsInDatabase(connection, username, newPoints);
                             out.println("<html><body>");
                             out.println("Welcome, " + username + "!");
                             out.println("<p>Your current loyalty points: " + currentPoints + "</p>");
-                            out.println("Points spent successfully.");
+                            out.println(pointsToSpend + " successfully spent.");
+                            out.println(" You now have " + newPoints + " points remaining.");
                             out.println("</body></html>");
 
                         } else {
