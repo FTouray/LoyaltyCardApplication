@@ -1,33 +1,33 @@
 <html>
-  <head>
+<head>
     <title>Points Main Page</title>
-  </head>
-  <body>
+</head>
+<body>
     <h1>Loyalty Card Management</h1>
-    <p>Welcome,</p>
+    <p>Welcome, <span id="username">Username</span>!</p>
     <p>Your current loyalty points: <span id="loyaltyPoints">0</span></p>
     <form action="PointsManagementServlet" method="get">
-      <label for="action">Select action:</label>
+        <label for="action">Select action:</label>
+       
+        <select name="action">
+            <option value="view">View Points</option>
+            <option value="add">Add Points</option>
+            <option value="spend">Spend Points</option>
+        </select><br>
+        
+        <div id="addPointsDiv">
+            <p>Enter Receipt Number To Add Points</p>
+            Receipt Number: <input type="number" name = "receiptNumber"/><br/>
+        </div>
 
-      <select name="action">
-        <option value="view">View Points</option>
-        <option value="add">Add Points</option>
-        <option value="spend">Spend Points</option></select
-      ><br />
+        <br>
 
-      <div id="addPointsDiv">
-        Enter Receipt Number To Add Points Receipt Number:
-        <input type="number" name="receiptNumber" /><br />
-      </div>
+        <div id="spendPointsDiv">
+            <p>Enter the Amount of Points You Wish To Spend:</p>
+            Amount:<input type="number" name="pointsToSpend">
+        </div>
 
-      <br />
-
-      <div id="spendPointsDiv">
-        Enter the Amount of Points You Wish To Spend: Amount:
-        <input type="number" name="pointsToSpend"/>
-      </div>
-      <br />
-      <input type="submit" value="SUBMIT" />
+        <input type="submit" value="SUBMIT">
     </form>
-  </body>
+</body>
 </html>
