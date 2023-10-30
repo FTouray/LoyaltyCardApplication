@@ -3,7 +3,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-//import java.sql.ResultSet;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 //import java.sql.Statement;
 
@@ -45,7 +45,7 @@ public class UserRegistrationServlet extends HttpServlet {
         try {
             int regPoints = 100;
 
-           /** PreparedStatement checkUsername = connection.prepareStatement(
+           PreparedStatement checkUsername = connection.prepareStatement(
                 "SELECT username FROM users WHERE username = ?");
             checkUsername.setString(1, username);
             ResultSet rs = checkUsername.executeQuery();
@@ -53,8 +53,8 @@ public class UserRegistrationServlet extends HttpServlet {
             if(rs.next()){
                 out.println("Username is already taken.");
                 //response.sendRedirect("usernameTaken.html");
-            }
-            else*/ if (password.equals(confirmPassword)) 
+            } else {
+             if (password.equals(confirmPassword)) 
             {// Insert into users       
                 PreparedStatement createUser = connection.prepareStatement(
                         "INSERT into users "
@@ -77,6 +77,7 @@ public class UserRegistrationServlet extends HttpServlet {
             out.print("Passwords do not match!");
                 //response.sendRedirect("registerError.html");
             }
+        }
         } catch (SQLException e1) {
             e1.printStackTrace();
         }
