@@ -1,5 +1,5 @@
 import java.io.IOException;
-//import java.io.PrintWriter;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -39,7 +39,7 @@ public class UserRegistrationServlet extends HttpServlet {
     
 
         response.setContentType("text/html");
-        //PrintWriter out = response.getWriter();
+        PrintWriter out = response.getWriter();
 
         // Check that the user has unique username and entered the password correctly twice
         try {
@@ -67,14 +67,15 @@ public class UserRegistrationServlet extends HttpServlet {
                 createUser.close();
 
                 if (rowsUpdated > 0){               
-                    // Registration is successful
+                    //Registration is successful
                     response.sendRedirect("UserLogin.html");
                 }
                 
             } 
             else if (!password.equals(confirmPassword)) 
             {// If the password doesn't match
-                response.sendRedirect("registerError.html");
+            out.print("Passwords do not match!");
+                //response.sendRedirect("registerError.html");
             }
         } catch (SQLException e1) {
             e1.printStackTrace();
