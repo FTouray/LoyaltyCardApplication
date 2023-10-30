@@ -1,1 +1,33 @@
-<!--Displays the balance-->
+<html>
+  <head>
+    <title>Points Main Page</title>
+  </head>
+  <body>
+    <h1>Loyalty Card Management</h1>
+    <p>Welcome,</p>
+    <p>Your current loyalty points: <span id="loyaltyPoints">0</span></p>
+    <form action="PointsManagementServlet" method="get">
+      <label for="action">Select action:</label>
+
+      <select name="action">
+        <option value="view">View Points</option>
+        <option value="add">Add Points</option>
+        <option value="spend">Spend Points</option></select
+      ><br />
+
+      <div id="addPointsDiv">
+        Enter Receipt Number To Add Points Receipt Number:
+        <input type="number" name="receiptNumber" /><br />
+      </div>
+
+      <br />
+
+      <div id="spendPointsDiv">
+        Enter the Amount of Points You Wish To Spend: Amount:
+        <input type="number" name="pointsToSpend"/>
+      </div>
+      <br />
+      <input type="submit" value="SUBMIT" />
+    </form>
+  </body>
+</html>
