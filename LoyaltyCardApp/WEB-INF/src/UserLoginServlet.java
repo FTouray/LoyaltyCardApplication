@@ -17,7 +17,7 @@ public class UserLoginServlet extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		Connection connection = null;
-		// Get the user's input from the HTML Page
+		// Get the user's input from the login HTML Page
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 
@@ -35,30 +35,31 @@ public class UserLoginServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 
+		// Check that the username and password is found in the database - this means
+		// they are registered
 		Statement checkLogin = null;
-		try {
-			checkLogin = connection.createStatement();
-
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
 		ResultSet rs = null;
 		try {
+			checkLogin = connection.createStatement();
 			rs = checkLogin.executeQuery("select * from users");
+
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+
+		// Print out text in web browser
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
+
 		try {
 			boolean isUser = false;
 			while (rs.next()) {
 				try {
+					// Check if the username and password from databse match the user input from
+					// html file
 					if (rs.getString(1).equalsIgnoreCase(username) && rs.getString(2).equals(password)) {
-						isUser = true;
+						isUser = true;// Set this to true if it matches
 						break;
 					}
 				} catch (SQLException e) {
@@ -70,11 +71,16 @@ public class UserLoginServlet extends HttpServlet {
 			if (isUser) {// If their details is in the database send them to page that allows them to
 				// see how many loyalty points they have now or choose to remove/spend points or
 				// add points from a receipt
+
+				// This allows the username to be kept for the LoyaltyCardServlet in order to
+				// update the points in the database
 				HttpSession session = request.getSession();
 				session.setAttribute("username", username);
 				response.sendRedirect("PointsMainPage.html");
-			} else {// If not, send response to the user saying login info not correct
-				out.println("Login information is incorrect.");
+
+			} else {
+				// If not, send alert to the user saying login info not correct
+				out.println("<script>alert('Login info is incorrect!');window.history.go(-1);</script>");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
