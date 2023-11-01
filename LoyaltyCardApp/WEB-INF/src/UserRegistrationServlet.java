@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-//import java.sql.Statement;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -31,53 +30,50 @@ public class UserRegistrationServlet extends HttpServlet {
             e.printStackTrace();
         }
 
+        // Get the username, password and password confirmation from the
         String username = request.getParameter("username");
-            String password = request.getParameter("password");
-            String confirmPassword = request.getParameter("confirmPassword");
+        String password = request.getParameter("password");
+        String confirmPassword = request.getParameter("confirmPassword");
 
-
-    
-
+        // Print out responses
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
 
-        // Check that the user has unique username and entered the password correctly twice
         try {
-            int regPoints = 100;
+            int regPoints = 100; // User gets 100 points when they register
 
-           PreparedStatement checkUsername = connection.prepareStatement(
-                "SELECT username FROM users WHERE username = ?");
+            // This stops there being more than one user with the same username
+            PreparedStatement checkUsername = connection.prepareStatement(
+                    "SELECT username FROM users WHERE username = ?");
             checkUsername.setString(1, username);
             ResultSet rs = checkUsername.executeQuery();
-            //Validate that the username is not taken
-            if(rs.next()){
-                out.println("Username is already taken.");
-                //response.sendRedirect("usernameTaken.html");
+            // Validate that the username is not taken - not in the database
+            if (rs.next()) {
+                // A popup appears letting the user know the username is taken
+                out.println("<script>alert('Username is taken!');window.history.go(-1);</script>");
             } else {
-             if (password.equals(confirmPassword)) 
-            {// Insert into users       
-                PreparedStatement createUser = connection.prepareStatement(
-                        "INSERT into users "
-                                + "(username, password, points)" + " VALUES (?, ?, ?)");
-                // Pass in the values as parameters
-                createUser.setString(1, username);
-                createUser.setString(2, password);
-                createUser.setInt(3, regPoints);// When a user registers that automatically get 100 points
-                int rowsUpdated = createUser.executeUpdate();
-                createUser.close();
+                if (password.equals(confirmPassword)) {// Insert into users if passwords match
+                    PreparedStatement createUser = connection.prepareStatement(
+                            "INSERT into users "
+                                    + "(username, password, points)" + " VALUES (?, ?, ?)");
+                    // Pass in the values as parameters
+                    createUser.setString(1, username);
+                    createUser.setString(2, password);
+                    createUser.setInt(3, regPoints);// When a user registers that automatically get 100 points
+                    int rowsUpdated = createUser.executeUpdate();
+                    createUser.close();
 
-                if (rowsUpdated > 0){               
-                    //Registration is successful
-                    response.sendRedirect("UserLogin.html");
+                    if (rowsUpdated > 0) {
+                        // Registration is successful takes them to the login page
+                        response.sendRedirect("UserLogin.html");
+                    }
+
+                } else if (!password.equals(confirmPassword)) {// If the password doesn't match
+                    // A pop up will appear saying your password does not match
+                    // Takes them back to the previous window
+                    out.println("<script>alert('Passwords do not match!');window.history.go(-1);</script>");
                 }
-                
-            } 
-            else if (!password.equals(confirmPassword)) 
-            {// If the password doesn't match
-            out.print("Passwords do not match!");
-                //response.sendRedirect("registerError.html");
             }
-        }
         } catch (SQLException e1) {
             e1.printStackTrace();
         }
