@@ -18,7 +18,6 @@ public class LoyaltyCardPointsServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         Connection connection = null;
-
         try {
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
@@ -32,9 +31,13 @@ public class LoyaltyCardPointsServlet extends HttpServlet {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        // Print out responses in the web browser
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
 
+        // From UserLoginServlet - gets the username from that session so it can be used
+        // in this servlet
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
         request.setAttribute("username", username);
@@ -44,74 +47,97 @@ public class LoyaltyCardPointsServlet extends HttpServlet {
             PreparedStatement getLoyaltyPoints = connection.prepareStatement(
                     "SELECT points FROM Users WHERE username = ?");
             getLoyaltyPoints.setString(1, username);
+            // To get the current loyalty points of the user
             ResultSet rs = getLoyaltyPoints.executeQuery();
             if (rs.next()) {
                 currentPoints = rs.getInt("points");
             }
 
-  
-                String action = request.getParameter("action");
-                if (action != null) {
+            // Get the action (view, add, spend points) from the PointMainPage.html
+            String action = request.getParameter("action");
+            if (action != null) {
 
-                    if (action.equals("view")) {
+                if (action.equals("view")) {
+                    // If its vew display their points
+                    out.println("<html><title>View Points</title><h1>Viewing Points</h1><body> " +
+                            "Welcome, " + username + "!" +
+                            "<p>Your current loyalty points: <b>" + currentPoints + "</b></p>" +
+                            "</body></html>");
 
-                        out.println("<html><body>");
-                        out.println("Welcome, " + username + "!");
-                        out.println("<p>Your current loyalty points: " + currentPoints + "</p>");
-                        out.println("</body></html>");
+                } else if (action.equals("add")) {
+                    // If the action is add
 
-                    } else if (action.equals("add")) {
+                    // Check is a receipt number is entered
+                    String receiptNumber = request.getParameter("receiptNumber");
 
-                        String receiptNumber = request.getParameter("receiptNumber");
+                    if (receiptNumber != null && !receiptNumber.isEmpty()) {
+                        // If a receipt number is entered
+                        Random random = new Random();
+                        int pointsToAdd = random.nextInt(20, 100);
+                        // Add a random number of points to the users current points
+                        int newPoints = currentPoints + pointsToAdd;
+                        // This is to update the amount of points they have in the database
+                        updatePointsInDatabase(connection, username, newPoints);
 
-                        if (receiptNumber != null && !receiptNumber.isEmpty()) {
-                            Random random = new Random();
-                            int pointsToAdd = random.nextInt(20, 100);
-                            int newPoints = currentPoints + pointsToAdd;
-                            updatePointsInDatabase(connection, username, newPoints);
-                            
-                            out.println("<html><body>");
-                            out.println("Welcome, " + username + "!");
-                            out.println("<p>Your current loyalty points: " + currentPoints + "</p>");
-                            out.println(pointsToAdd + " Points added successfully from receipt.");
-                            out.println("<p>Total Points now: " + newPoints + "</p>");
-                            out.println("</body></html>");
+                        out.println("<html><title>Add Points</title><h1>Addding Points</h1><body>" +
+                                "Welcome, " + username + "!" +
+                                "<p>Your current loyalty points: <b>" + currentPoints + "</b></p><b>" +
+                                pointsToAdd + "</b> Points added successfully from receipt." +
+                                "<p>Total Points now: <b>" + newPoints + "</b></p>" +
+                                "</body></html>");
 
-                        } else {
-                            out.println("No receipt number was provided");
-                            return;
-                        }
+                    } else {
+                        // If no receipt number is added and the selected add points let them know
+                        out.println("<script>alert('No receipt number was provided');window.history.go(-1);</script>");
 
-                    } else if (action.equals("spend")) {
-
-                        int pointsToSpend = Integer.parseInt(request.getParameter("pointsToSpend"));
-                        if (currentPoints - pointsToSpend >= 0) {
-                             int newPoints = currentPoints - pointsToSpend;
-                            updatePointsInDatabase(connection, username, newPoints);
-                            out.println("<html><body>");
-                            out.println("Welcome, " + username + "!");
-                            out.println("<p>Your current loyalty points: " + currentPoints + "</p>");
-                            out.println(pointsToSpend + " successfully spent.");
-                            out.println(" You now have " + newPoints + " points remaining.");
-                            out.println("</body></html>");
-
-                        } else {
-                            out.println("You cannot spend more points than you have");
-                            return;
-                        }
                     }
 
+                } else if (action.equals("spend")) {// If they wish to spend points
+
+                    // Get the points they wish to spend from the textfield in the
+                    // PointsMainPage.html
+                    String pointsToSpendString = request.getParameter("pointsToSpend");// Had to change to String in order to make sure textfield is not empty
+                    
+                    
+                    if (pointsToSpendString != null && !pointsToSpendString.isEmpty()) {
+                        int pointsToSpend = Integer.parseInt(request.getParameter("pointsToSpend"));
+                    
+                        if (currentPoints - pointsToSpend >= 0) { // if the points they want to spend is less than the
+                                                                  // amount the have
+                            int newPoints = currentPoints - pointsToSpend;
+                            updatePointsInDatabase(connection, username, newPoints);// Update the points in the database
+                            out.println("<html><title>Spend Points</title><h1>Spending Points</h1><body>" +
+                                    "Welcome, " + username + "!" +
+                                    "<p>Your current loyalty points: <b>" + currentPoints + "</b></p><b>" +
+                                    pointsToSpend + "</b> points have successfully been spent." +
+                                    "<p>You now have <b>" + newPoints + "</b> points remaining</p>" +
+                                    "</body></html>");
+
+                        } else { // Display message if the want to spend more points than they have
+                            out.println(
+                                    "<script>alert('You cannot spend more points than you have');window.history.go(-1);</script>");
+                        }
+                    } else {
+                        // If no amount is added and they selected spend points let them know
+                        out.println("<script>alert('No amount to spend was provided');window.history.go(-1);</script>");
+
+                    }
                 }
-            
+
+            }
+
         } catch (SQLException e1) {
             e1.printStackTrace();
         }
     }
 
+    // Update the amount of points in the database
     private void updatePointsInDatabase(Connection connection, String username, int newPoints) {
         try {
-            PreparedStatement updatePoints = connection
-                    .prepareStatement("UPDATE users SET points = ? WHERE username = ?");
+            PreparedStatement updatePoints = connection.prepareStatement(
+                    "UPDATE users SET points = ? WHERE username = ?");
+            // Updates the points in users table where the username equals the username for
+            // the seesion
             updatePoints.setInt(1, newPoints);
             updatePoints.setString(2, username);
             updatePoints.executeUpdate();
