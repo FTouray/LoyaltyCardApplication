@@ -114,8 +114,7 @@ public class LoyaltyCardPointsServlet extends HttpServlet {
                                     "</body></html>");
 
                         } else { // Display message if the want to spend more points than they have
-                            out.println(
-                                    "<script>alert('You cannot spend more points than you have');window.history.go(-1);</script>");
+                            out.println("<script>alert('You cannot spend more points than you have');window.history.go(-1);</script>");
                         }
                     } else {
                         // If no amount is added and they selected spend points let them know
@@ -124,6 +123,8 @@ public class LoyaltyCardPointsServlet extends HttpServlet {
                     }
                 }
 
+            } else { // If an option isn't selected
+                    out.println("<script>alert('Pick an option to continue!');window.history.go(-1);</script>");
             }
 
         } catch (SQLException e1) {
