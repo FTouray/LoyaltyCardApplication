@@ -102,7 +102,7 @@ public class LoyaltyCardPointsServlet extends HttpServlet {
                     if (pointsToSpendString != null && !pointsToSpendString.isEmpty()) {
                         int pointsToSpend = Integer.parseInt(request.getParameter("pointsToSpend"));
                     
-                        if (currentPoints - pointsToSpend >= 0) { // if the points they want to spend is less than the
+                        if (pointsToSpend <= currentPoints ) { // if the points they want to spend is less than the
                                                                   // amount the have
                             int newPoints = currentPoints - pointsToSpend;
                             updatePointsInDatabase(connection, username, newPoints);// Update the points in the database
