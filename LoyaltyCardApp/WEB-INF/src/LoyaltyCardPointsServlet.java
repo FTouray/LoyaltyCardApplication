@@ -73,7 +73,7 @@ public class LoyaltyCardPointsServlet extends HttpServlet {
                     if (receiptNumber != null && !receiptNumber.isEmpty()) {
                         // If a receipt number is entered
                         Random random = new Random();
-                        double pointsToAdd = random.nextDouble(20, 100);
+                        int pointsToAdd = random.nextInt(20, 100);
                         // Add a random number of points to the users current points
                         double newPoints = currentPoints + pointsToAdd;
                         // This is to update the amount of points they have in the database
