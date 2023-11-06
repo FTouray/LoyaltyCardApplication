@@ -43,14 +43,14 @@ public class LoyaltyCardPointsServlet extends HttpServlet {
         request.setAttribute("username", username);
 
         try {
-            int currentPoints = 0;
+            double currentPoints = 0;
             PreparedStatement getLoyaltyPoints = connection.prepareStatement(
                     "SELECT points FROM Users WHERE username = ?");
             getLoyaltyPoints.setString(1, username);
             // To get the current loyalty points of the user
             ResultSet rs = getLoyaltyPoints.executeQuery();
             if (rs.next()) {
-                currentPoints = rs.getInt("points");
+                currentPoints = rs.getDouble("points");
             }
 
             // Get the action (view, add, spend points) from the PointMainPage.html
@@ -73,9 +73,9 @@ public class LoyaltyCardPointsServlet extends HttpServlet {
                     if (receiptNumber != null && !receiptNumber.isEmpty()) {
                         // If a receipt number is entered
                         Random random = new Random();
-                        int pointsToAdd = random.nextInt(20, 100);
+                        double pointsToAdd = random.nextDouble(20, 100);
                         // Add a random number of points to the users current points
-                        int newPoints = currentPoints + pointsToAdd;
+                        double newPoints = currentPoints + pointsToAdd;
                         // This is to update the amount of points they have in the database
                         updatePointsInDatabase(connection, username, newPoints);
 
@@ -100,11 +100,11 @@ public class LoyaltyCardPointsServlet extends HttpServlet {
                     
                     
                     if (pointsToSpendString != null && !pointsToSpendString.isEmpty()) {
-                        int pointsToSpend = Integer.parseInt(request.getParameter("pointsToSpend"));
+                        double pointsToSpend = Double.parseDouble(request.getParameter("pointsToSpend"));
                     
                         if (pointsToSpend <= currentPoints ) { // if the points they want to spend is less than the
                                                                   // amount the have
-                            int newPoints = currentPoints - pointsToSpend;
+                            double newPoints = currentPoints - pointsToSpend;
                             updatePointsInDatabase(connection, username, newPoints);// Update the points in the database
                             out.println("<html><title>Spend Points</title><h1>Spending Points</h1><body>" +
                                     "Welcome, " + username + "!" +
@@ -133,13 +133,13 @@ public class LoyaltyCardPointsServlet extends HttpServlet {
     }
 
     // Update the amount of points in the database
-    private void updatePointsInDatabase(Connection connection, String username, int newPoints) {
+    private void updatePointsInDatabase(Connection connection, String username, double newPoints) {
         try {
             PreparedStatement updatePoints = connection.prepareStatement(
                     "UPDATE users SET points = ? WHERE username = ?");
             // Updates the points in users table where the username equals the username for
             // the seesion
-            updatePoints.setInt(1, newPoints);
+            updatePoints.setDouble(1, newPoints);
             updatePoints.setString(2, username);
             updatePoints.executeUpdate();
         } catch (SQLException e) {
