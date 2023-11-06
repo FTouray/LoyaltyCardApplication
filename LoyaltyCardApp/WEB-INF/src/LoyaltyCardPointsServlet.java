@@ -79,7 +79,7 @@ public class LoyaltyCardPointsServlet extends HttpServlet {
                         // This is to update the amount of points they have in the database
                         updatePointsInDatabase(connection, username, newPoints);
 
-                        out.println("<html><title>Add Points</title><h1>Addding Points</h1><body>" +
+                        out.println("<html><title>Add Points</title><h1>Adding Points</h1><body>" +
                                 "Welcome, " + username + "!" +
                                 "<p>Your current loyalty points: <b>" + currentPoints + "</b></p><b>" +
                                 pointsToAdd + "</b> Points added successfully from receipt." +
